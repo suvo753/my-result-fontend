@@ -1,69 +1,125 @@
-import Image from "next/image";
+"use client";
+
+import { useState } from "react";
+import { Button, Input, TextField } from "@heroui/react";
+import { FaArrowRight, FaLock } from "react-icons/fa";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
+  const router = useRouter();
+
+  const [securityCode, setSecurityCode] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = () => {
+    setError("");
+
+    if (!securityCode.trim()) {
+      setError("Please enter your security number.");
+      return;
+    }
+
+    setLoading(true);
+
+    // Demo security code
+    if (securityCode === "713676") {
+      router.push("/result");
+    } else {
+      setLoading(false);
+      setError("Invalid security number. Please try again.");
+    }
+  };
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.js
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <main className="min-h-screen w-full bg-slate-50 flex items-center justify-center px-3 py-6 sm:px-5 sm:py-10">
+      <div className="w-full max-w-md sm:max-w-lg">
+
+        <div className="rounded-2xl sm:rounded-3xl border border-slate-300 bg-white p-5 sm:p-7 md:p-8 shadow-xl shadow-slate-200/60">
+
+          {/* Logo */}
+          <div className="flex justify-center mb-5 sm:mb-6">
+            <div className="flex items-center justify-center h-20 w-20 sm:h-24 sm:w-24 rounded-full border-2 border-slate-300 bg-white p-2.5 sm:p-3 shadow-md">
+              <img
+                src="/buet.svg"
+                alt="University Logo"
+                className="h-full w-full object-contain"
+              />
+            </div>
+          </div>
+
+          {/* Heading */}
+          <div className="text-center">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-slate-900">
+              CSE Result Zone
+            </h1>
+
+            <p className="mt-2 text-sm sm:text-base font-medium text-slate-500">
+              BUET • Department of CSE
+            </p>
+          </div>
+
+          <div className="my-6 sm:my-7 h-px bg-slate-200" />
+
+          {/* Security Input */}
+          <TextField
+            name="security"
+            className="w-full"
+          >
+            <div className="relative w-full">
+
+              <FaLock className="absolute left-3 sm:left-4 top-1/2 z-10 -translate-y-1/2 text-slate-500 text-sm sm:text-base" />
+
+              <Input
+                value={securityCode}
+                onChange={(e) => {
+                  setSecurityCode(e.target.value);
+                  setError("");
+                }}
+                type="text"
+                inputMode="numeric"
+                placeholder="Enter your security number"
+                className="w-full pl-9 sm:pl-11 text-sm sm:text-base font-medium"
+                style={{
+                  border: "2px solid #475569",
+                  borderRadius: "12px",
+                }}
+              />
+
+            </div>
+          </TextField>
+
+          {/* Error */}
+          {error && (
+            <p className="mt-2 text-sm font-medium text-red-500">
+              {error}
+            </p>
+          )}
+
+          {/* Button */}
+          <Button
+            onPress={handleSubmit}
+            isDisabled={loading}
+            className="mt-4 sm:mt-5 h-11 sm:h-12 w-full rounded-xl bg-slate-900 text-white text-sm sm:text-base font-semibold shadow-md shadow-slate-300 transition-all hover:-translate-y-0.5 hover:bg-slate-800 hover:shadow-lg"
+          >
+              {loading ? "Verifying..." : "Verify & Continue"}
+
+            {!loading && (
+              <FaArrowRight className="ml-2 text-xs sm:text-sm" />
+            )}
+          </Button>
+
+          <p className="mt-5 sm:mt-6 text-center text-[11px] sm:text-xs leading-5 text-slate-400 px-2">
+            Enter your security number to securely view your academic result.
           </p>
+
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+
+        <p className="mt-4 sm:mt-5 text-center text-[11px] sm:text-xs text-slate-400">
+          © {new Date().getFullYear()} CSE Result Zone
+        </p>
+
+      </div>
+    </main>
   );
 }
